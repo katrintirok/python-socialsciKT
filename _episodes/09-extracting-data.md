@@ -19,11 +19,11 @@ keypoints:
 
 ---
 
-We will continue this episode from where we left off in the last episode. If you have restarted Jupyter or you want to use a new notebook make sure that you import pandas and have read the SN7577.tab dataset into a Dataframe.
+We will continue this episode from where we left off in the last episode. If you have restarted Jupyter or you want to use a new notebook make sure that you import pandas and have read the SAFI_clean.csv dataset into a Dataframe.
 
 ~~~
 import pandas as pd
-df_SN7577 = pd.read_csv("SN7577.tab", sep='\t')
+df_SAFI = pd.read_csv("SAFI_clean.csv")
 ~~~
 {: .language-python}
 
@@ -32,55 +32,60 @@ df_SN7577 = pd.read_csv("SN7577.tab", sep='\t')
 If we know which columns we want before we read the data from the file we can tell `read_csv()` to only import those columns by specifying columns either by their index number (starting at 0) as a list to the `usecols` parameter. Alternatively we can also provide a list of column names.  
 
 ~~~
-df_SN7577_some_cols = pd.read_csv("SN7577.tab", sep='\t', usecols= [0,1,2,173,174,175])
-print(df_SN7577_some_cols.shape)
-print(df_SN7577_some_cols.columns)
-df_SN7577_some_cols = pd.read_csv("SN7577.tab", sep='\t', usecols= ['Q1', 'Q2', 'Q3', 'sex', 'age', 'agegroups'])
-print(df_SN7577_some_cols.columns)
+df_SAFI_some_cols = pd.read_csv("SAFI_clean.csv", usecols=[0,1,2,12,13,14])
+print(df_SAFI_some_cols.shape)
+print(df_SAFI_some_cols.columns)
 ~~~
 {: .language-python}
 
 ~~~
-(1286, 6)
-Index(['Q1', 'Q2', 'Q3', 'sex', 'age', 'agegroups'], dtype='object')
-Index(['Q1', 'Q2', 'Q3', 'sex', 'age', 'agegroups'], dtype='object')
+(131, 6)
+Index(['key_ID', 'village', 'interview_date', 'no_meals', 'months_lack_food',
+       'instanceID'],
+      dtype='object')
 ~~~
 {: .output}
 
-Let us assume for now that we read in the complete file which is now in the Dataframe `df_SN7577`, how can we now refer to specific columns?
+Let us assume for now that we read in the complete file which is now in the Dataframe `df_SAFI`, how can we now refer to specific columns?
 
 There are two ways of doing this using the column names (or labels):
 
 ~~~
 # Both of these statements are the same
-print(df_SN7577['Q1'])
+print(df_SAFI['village'])
 # and
-print(df_SN7577.Q1)
+print(df_SAFI.village)
 ~~~
 {: .language-python}
 
 ~~~
-0        1
-1        3
-2       10
-3        9
+0           God
+1           God
+2           God
+3           God
+4           God
+5           God
+6           God
+7      Chirodzo
+8      Chirodzo
 ...
 ~~~
 {: .output}
 
-If we are interested in more than one column, the 2nd method above cannot be used. However in the first, although we used a string with the value of `'Q1'` we could also have provided a list of strings. Remember that lists are enclosed in `[]`.
+If we are interested in more than one column, the 2nd method above cannot be used. However in the first, although we used a string with the value of `'village'` we could also have provided a list of strings. Remember that lists are enclosed in `[]`.
 
 ~~~
-print(df_SN7577[['Q1', 'Q2', 'Q3']])
+print(df_SAFI[['village', 'interview_date', 'no_membrs']])
 ~~~
 {: .language-python}
 
 ~~~
-Q1  Q2  Q3
-0      1  -1   1
-1      3  -1   1
-2     10   3   2
-3      9  -1  10
+     village        interview_date  no_membrs
+0         God  2016-11-17T00:00:00Z          3
+1         God  2016-11-17T00:00:00Z          7
+2         God  2016-11-17T00:00:00Z         10
+3         God  2016-11-17T00:00:00Z          7
+4         God  2016-11-17T00:00:00Z          7
 ...
 ~~~
 {: .language-python}
@@ -95,9 +100,9 @@ Q1  Q2  Q3
 > > ## Solution
 > >
 > > ~~~
-> > print(df_SN7577[['Q3', 'Q2']])
-> > print(df_SN7577[['Q3', 'Q2', 'Q3']])
-> > print(df_SN7577[['Q33', 'Q2']])
+> > print(df_SAFI[['no_membrs', 'village']])
+> > print(df_SAFI[['no_membrs', 'village', 'no_membrs']])
+> > print(df_SAFI[['no_members', 'village']])
 > > ~~~
 > > {: .language-python}
 > {: .solution}
@@ -109,8 +114,8 @@ You can filter the Dataframe by rows by specifying a range in the form of `a:b`.
 
 ~~~
 # select row with index of 1, 2 and 3 (rows 2, 3 and 4 in the Dataframe)
-df_SN7577_some_rows = df_SN7577[1:4]
-df_SN7577_some_rows
+df_SAFI_some_rows = df_SAFI[1:4]
+df_SAFI_some_rows
 ~~~
 {: .language-python}
 
@@ -121,7 +126,7 @@ df_SN7577_some_rows
 > > ## Solution
 > >
 > > ~~~
-> > df_SN7577[1]
+> > df_SAFI[1]
 > > ~~~
 > > {: .language-python}
 > >
@@ -137,24 +142,24 @@ It is more likely that you will want to select rows from the Dataframe based on 
 
 
 ~~~
-df_SN7577_some_rows = df_SN7577[(df_SN7577.Q2 == -1)]
-df_SN7577_some_rows
+df_SAFI_some_rows = df_SAFI[(df_SAFI.village == 'Ruaca')]
+df_SAFI_some_rows
 ~~~
 {: .language-python}
 
 The criteria can be more complex and isn't limited to a single column's values:
 
 ~~~
-df_SN7577_some_rows = df_SN7577[ (df_SN7577.Q2 == -1) & (df_SN7577.numage > 60)]
-df_SN7577_some_rows
+df_SAFI_some_rows = df_SAFI[ (df_SAFI.village == 'Ruaca') & (df_SAFI.no_membrs > 15)]
+df_SAFI_some_rows
 ~~~
 {: .language-python}
 
 We can combine the row selection with column selection:
 
 ~~~
-df_SN7577_some_rows = df_SN7577[ (df_SN7577.Q2 == -1) & (df_SN7577.numage > 60)][['Q1', 'Q2','numage']]
-df_SN7577_some_rows
+df_SAFI_some_rows = df_SAFI[ (df_SAFI.village == 'Ruaca') & (df_SAFI.no_membrs > 15)][['village', 'years_liv','rooms']]
+df_SAFI_some_rows
 ~~~
 {: .language-python}
 
@@ -163,8 +168,8 @@ Selecting rows on the row index is of limited use unless you need to select a co
 There is however another way of selecting rows using the row index:
 
 ~~~
-df_SN7577_some_rows = df_SN7577.iloc[1:4]
-df_SN7577_some_rows
+df_SAFI_some_rows = df_SAFI.iloc[1:4]
+df_SAFI_some_rows
 ~~~
 {: .language-python}
 
@@ -174,11 +179,11 @@ However, now we can specify a single value and more importantly we can use the `
 
 ~~~
 # Select the first row from the Dataframe
-df_SN7577_some_rows = df_SN7577.iloc[0]
-df_SN7577_some_rows
+df_SAFI_some_rows = df_SAFI.iloc[0]
+df_SAFI_some_rows
 # select every 100th record from the Dataframe.
-df_SN7577_some_rows = df_SN7577.iloc[range(0, len(df_SN7577), 100)]
-df_SN7577_some_rows
+df_SAFI_some_rows = df_SAFI.iloc[range(0, len(df_SAFI), 20)]
+df_SAFI_some_rows
 ~~~
 {: .language-python}
 
@@ -186,20 +191,20 @@ You can also specify column ranges using the `iloc` method again using the colum
 
 ~~~
 # columns 0,1,2 and 3
-df_SN7577_some_rows = df_SN7577.iloc[range(0, len(df_SN7577), 100),0:4]
-df_SN7577_some_rows
-# columns 0,1,2,78 and 95
-df_SN7577_some_rows = df_SN7577.iloc[range(0, len(df_SN7577), 100),[0,1,2,78,95]]
-df_SN7577_some_rows
+df_SAFI_some_rows = df_SAFI.iloc[range(0, len(df_SAFI), 20),0:4]
+df_SAFI_some_rows
+# columns 0,1,2,30 and 60
+df_SAFI_some_rows = df_SAFI.iloc[range(0, len(df_SAFI), 20),[0,1,6,12]]
+df_SAFI_some_rows
 ~~~
 {: .language-python}
 
 There is also a `loc` method which allows you to use the column names.
 
 ~~~
-# columns 0,1,2,78 and 95 using the column names and changing 'iloc' to 'loc'
-df_SN7577_some_rows = df_SN7577.loc[range(0, len(df_SN7577), 100),['Q1', 'Q2', 'Q3', 'Q18bii', 'access6' ]]
-df_SN7577_some_rows
+# columns 0,1,6 and 12 using the column names and changing 'iloc' to 'loc'
+df_SAFI_some_rows = df_SAFI.loc[range(0, len(df_SAFI), 20),['key_ID', 'village', 'rooms', 'months_lack_food']]
+df_SAFI_some_rows
 ~~~
 {: .language-python}
 
@@ -208,7 +213,7 @@ df_SN7577_some_rows
 Pandas does have a `sample` method which allows you to extract a sample of the records from the Dataframe.
 
 ~~~
-df_SN7577.sample(10, replace=False)             # ten records, do not select same record twice (this is the default)
-df_SN7577.sample(frac=0.05, random_state=1)     # 5% of records , same records if run again
+df_SAFI.sample(10, replace=False)             # ten records, do not select same record twice (this is the default)
+df_SAFI.sample(frac=0.05, random_state=1)     # 5% of records , same records if run again
 ~~~
 {: .language-python}
