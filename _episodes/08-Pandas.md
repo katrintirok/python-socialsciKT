@@ -52,7 +52,7 @@ import pandas as pd
 
 ## Pandas data structures
 
-There are two main data structure used by pandas, they are the Series and the Dataframe. The Series equates in general to a vector or a list. The Dataframe is equivalent to a table. Each column in a pandas Dataframe is a pandas Series data structure.
+There are two main data structures used by pandas, they are the Series and the Dataframe. The Series equates in general to a vector or a list. The Dataframe is equivalent to a table. Each column in a pandas Dataframe is a pandas Series data structure.
 
 We will mainly be looking at the Dataframe.
 
@@ -67,39 +67,38 @@ The main advantage of this approach, however, is that you only have to store one
 In Pandas, csv files are read as complete datasets. You do not have to explicitly open and close the dataset. All of the dataset records are assembled into a Dataframe. If your dataset has column headers in the first record then these can be used as the Dataframe column names. You can explicitly state this in the parameters to the call, but pandas is usually able to infer that there ia a header row and use it automatically.
 
 
-We are going to read in our SN7577.tab file. Although this is a tab delimited file we will still use the pandas `read_csv` method, but we will explicitly tell the method that the separator is the tab character and not a comma which is the default.
+We are going to read in our SAFI_clean.csv file. We will use the pandas `read_csv` method, which takes a comma as the default character to separate between columns.
 
 ~~~
-df_SN7577 = pd.read_csv("SN7577.tab", sep='\t')
+SAFI = pd.read_csv("SAFI_clean.csv")
 ~~~
 {: .language-python}
 
 > ## Exercise
 >
-> What happens if you forget to specify `sep='\t'` when reading a tab delimited dataset
+> What happens if you specify the tab character as column separator with `sep='\t'`?
 >
 > > ## Solution
 > >
 > > ~~~
-> > df_SN7577_oops = pd.read_csv("SN7577.tab")
-> > print(df_SN7577_oops.shape)
-> > print(df_SN7577_oops)
+> > SAFI_oops = pd.read_csv("SAFI_clean.csv", sep = '\t')
+> > print(SAFI_oops.shape)
+> > print(SAFI_oops)
 > > ~~~
 > > {: .language-python}
 > >
-> > If you allow pandas to assume that your columns are separated by commas (the default) and there aren't any, then each record will be treated as a single column. So the shape is given as 1286 rows (correct) but only one column.
-> > When the contents is display the only column name is the complete first record. Notice the `\t` used to represent the tab characters in the output. This is the same format we used to specify the tab separator when we correctly read in the file.
-> >
+> > If you use a separation character that is not used in the data, then each record will be treated as a single column. So the shape is given as 131 rows (correct) but only one column.
+> > When the contents is displayed the only column name is the complete first record.
 > >
 > {: .solution}
 {: .challenge}
 
 ##  Getting information about a Dataframe
 
-You can find out the type of the variable `df_SN7577` by using the `type` function.
+You can find out the type of the variable `SAFI` by using the `type` function.
 
 ~~~
-print(type(df_SN7577))
+print(type(SAFI))
 ~~~
 {: .language-python}
 
@@ -110,19 +109,41 @@ print(type(df_SN7577))
 
 You can see the contents by simply entering the variable name. You can see from the output that it is a tabular format. The column names have been taken from the first record of the file. On the left hand side is a column with no name. The entries here have been provided by pandas and act as an index to reference the individual rows of the Dataframe.
 
-The `read_csv()` function has an `index_col` parameter which you can use to indicate which of the columns in the file you wish to use as the index instead. As the SN7577 dataset doesn't have a column which would uniquely identify each row we cannot do that.
+The `read_csv()` function has an `index_col` parameter which you can use to indicate which of the columns in the file you wish to use as the index instead. 
+The SAFI dataset has the `instanceID` column which uniquely identifies each row. 
+
+~~~
+SAFI = pd.read_csv('SAFI_clean.csv', index_col = 'instanceID')
+SAFI.index
+~~~
+{: .language-python
+
+~~~
+Index(['uuid:ec241f2c-0609-46ed-b5e8-fe575f6cefef',
+       'uuid:099de9c9-3e5e-427b-8452-26250e840d6e',
+       'uuid:193d7daf-9582-409b-bf09-027dd36f9007',
+       'uuid:148d1105-778a-4755-aa71-281eadd4a973',
+       'uuid:2c867811-9696-4966-9866-f35c3e97d02d',
+       'uuid:daa56c91-c8e3-44c3-a663-af6a49a2ca70',
+       'uuid:ae20a58d-56f4-43d7-bafa-e7963d850844',
+       'uuid:d6cee930-7be1-4fd9-88c0-82a08f90fb5a',
+       'uuid:846103d2-b1db-4055-b502-9cd510bb7b37',
+       'uuid:8f4e49bc-da81-4356-ae34-e0d794a23721',
+       ...
+~~~
+{: .output}
 
 Another thing to notice about the display is that it is truncated. By default you will see the first and last 30 rows. For the columns you will always get the first few columns and typically the last few depending on display space.
 
 ~~~
-df_SN7577
+print(SAFI)
 ~~~
 {: .language-python}
 
-Similar information can be obtained with `df_SN7577.head()` But here you are only returned the first 5 rows by default.
+Similar information can be obtained with `SAFI.head()` But here you are only returned the first 5 rows by default.
 
 ~~~
-df_SN7577.head()
+SAFI.head()
 ~~~
 {: .language-python}
 
@@ -137,46 +158,39 @@ You can obtain other basic information about your Dataframe of data with:
 
 ~~~
 # How many rows?
-print(len(df_SN7577))
+print(len(SAFI))
 # How many rows and columns - returned as a tuple
-print(df_SN7577.shape)
+print(SAFI.shape)
 #How many 'cells' in the table
-print(df_SN7577.size)
+print(SAFI.size)
 # What are the column names
-print(df_SN7577.columns)
+print(SAFI.columns)
 # what are the data types of the columns?
-print(df_SN7577.dtypes)
+print(SAFI.dtypes)
 ~~~
 {: .language-python}
 
 ~~~
-1286
-(1286, 202)
-259772
-Index(['Q1', 'Q2', 'Q3', 'Q4', 'Q5ai', 'Q5aii', 'Q5aiii', 'Q5aiv', 'Q5av',
-       'Q5avi',
-       ...
-       'numhhd', 'numkid', 'numkid2', 'numkid31', 'numkid32', 'numkid33',
-       'numkid34', 'numkid35', 'numkid36', 'wts'],
-      dtype='object', length=202)
-Q1             int64
-Q2             int64
-Q3             int64
-...
-Length: 202, dtype: object
+131
+(131, 13)
+1703
+Index(['key_ID', 'village', 'interview_date', 'no_membrs', 'years_liv',
+       'respondent_wall_type', 'rooms', 'memb_assoc', 'affect_conflicts',
+       'liv_count', 'items_owned', 'no_meals', 'months_lack_food'],
+      dtype='object')
+key_ID                   int64
+village                 object
+interview_date          object
+no_membrs                int64
+years_liv                int64
+respondent_wall_type    object
+rooms                    int64
+memb_assoc              object
+affect_conflicts        object
+liv_count                int64
+items_owned             object
+no_meals                 int64
+months_lack_food        object
+dtype: object
 ~~~
 {: .output}
-
-> ## Exercise
->
-> When we asked for the column names and their data types, the output was abridged, i.e. we didn't get the values for all of the columns. Can you write a small piece of code which will return all of the values
->
-> > ## Solution
-> >
-> > ~~~
-> > for name in df_SN7577.columns:
-> >     print(name)
-> > ~~~
-> > {: .language-python}
-> {: .solution}
-{: .challenge}
