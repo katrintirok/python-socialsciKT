@@ -67,7 +67,7 @@ The main advantage of this approach, however, is that you only have to store one
 In Pandas, csv files are read as complete datasets. You do not have to explicitly open and close the dataset. All of the dataset records are assembled into a Dataframe. If your dataset has column headers in the first record then these can be used as the Dataframe column names. You can explicitly state this in the parameters to the call, but pandas is usually able to infer that there ia a header row and use it automatically.
 
 
-We are going to read in our SAFI_clean.csv file. We will use the pandas `read_csv` method, which takes a comma as the default character to separate between columns.
+We are going to read in our [SAFI_clean.csv](../data/SAFI_clean.csv) file. We will use the pandas `read_csv` method, which takes a comma as the default character to separate between columns.
 
 ~~~
 SAFI = pd.read_csv("SAFI_clean.csv")

@@ -25,7 +25,7 @@ There are many occasions when we have related data spread across multiple files.
 
 The data can be related to each other in different ways. How they are related and how completely we can join the data from the datasets will vary.
 
-In this episode we will consider different scenarios and show how we might join the data. We will use csv files and in all cases the first step will be to read the datasets into a pandas Dataframe from where we will do the joining. The csv files we are using are different versions of the SAFI_clean dataset. We need the following csv files - [SAFI_God.csv](./data/SAFI_God.csv), [SAFI_Ruaca.csv](./data/SAFI_Ruaca.csv), [SAFI_numCols.csv](./data/SAFI_numCols.csv), [SAFI_charCols.csv](./data/SAFI_charCols.csv). 
+In this episode we will consider different scenarios and show how we might join the data. We will use csv files and in all cases the first step will be to read the datasets into a pandas Dataframe from where we will do the joining. The csv files we are using are different versions of the SAFI_clean dataset. We need the following csv files - [SAFI_God.csv](../data/SAFI_God.csv), [SAFI_Ruaca.csv](../data/SAFI_Ruaca.csv), [SAFI_numCols.csv](../data/SAFI_numCols.csv), [SAFI_charCols.csv](../data/SAFI_charCols.csv). 
 
 ### Scenario 1 - Two data sets containing the same columns but different rows of data
 
